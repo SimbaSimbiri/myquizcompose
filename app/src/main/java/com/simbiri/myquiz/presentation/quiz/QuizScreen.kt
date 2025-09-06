@@ -3,13 +3,16 @@ package com.simbiri.myquiz.presentation.quiz
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -23,44 +26,68 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import com.simbiri.myquiz.domain.QuizQuestion
 import com.simbiri.myquiz.domain.UserAnswer
 import com.simbiri.myquiz.presentation.common_component.ErrorScreen
+import com.simbiri.myquiz.presentation.quiz.component.ExitQuizDialog
+import com.simbiri.myquiz.presentation.quiz.component.QuizScreenLoadingContent
 import com.simbiri.myquiz.presentation.quiz.component.QuizScreenTopBar
 import com.simbiri.myquiz.presentation.quiz.component.QuizSubmitButtons
+import com.simbiri.myquiz.presentation.quiz.component.SubmitQuizDialog
 
 @Composable
 fun QuizScreen(
     state: QuizState
 ) {
+    SubmitQuizDialog(
+        isDialogOpen = state.isSubmitQuizDialogOpen,
+        onDialogDismiss = {},
+        onConfirmButtonClick = {}
+    )
+
+    ExitQuizDialog(
+        isDialogOpen = state.isExitQuizDialogOpen,
+        onDialogDismiss = {},
+        onConfirmButtonClick = {}
+    )
+
     Column(modifier = Modifier.fillMaxSize()) {
         QuizScreenTopBar(
             title = state.topBarTitle,
             onExitQuizClick = {}
         )
 
-        when {
-            state.errorMessage != null -> {
-                ErrorScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    onRefreshIconClick = {},
-                    errorMessage = state.errorMessage
-                )
-            }
+        if (state.isLoading) {
+            QuizScreenLoadingContent(
+                modifier = Modifier.fillMaxSize(),
+                loadingMessage = state.loadingMessage ?: "Loading Quiz..."
+            )
+        } else {
+            when {
+                state.errorMessage != null -> {
+                    ErrorScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        onRefreshIconClick = {},
+                        errorMessage = state.errorMessage
+                    )
+                }
 
-            state.questionsList.isEmpty() -> {
-                ErrorScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    onRefreshIconClick = {},
-                    errorMessage = "No questions available"
-                )
-            }
+                state.questionsList.isEmpty() -> {
+                    ErrorScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        onRefreshIconClick = {},
+                        errorMessage = "No questions available"
+                    )
+                }
 
-            else -> {
-                QuizScreenContent(state = state)
+                else -> {
+                    QuizScreenContent(state = state)
+                }
             }
         }
+
 
     }
 
@@ -126,15 +153,19 @@ private fun QuestionItem(
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        currentQuestion.allOptions.forEach { option ->
-            OptionItem(
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth(),
-                option = option,
-                isSelected = option == selectedAnswer,
-                onClick = { onOptionSelected(currentQuestion.id, option) }
-            )
+        FlowRow (
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ){
+            currentQuestion.allOptions.forEach { option ->
+                OptionItem(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .widthIn(min= 400.dp),
+                    option = option,
+                    isSelected = option == selectedAnswer,
+                    onClick = { onOptionSelected(currentQuestion.id, option) }
+                )
+            }
         }
     }
 }
@@ -214,7 +245,8 @@ private fun QuestionNavigationRow(
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
+@PreviewScreenSizes
 @Composable
 fun QuizScreenPreview() {
     val dummyQns = List(5) { idx ->
@@ -228,8 +260,13 @@ fun QuizScreenPreview() {
         )
     }
     val dummyAnswers = listOf(
-        UserAnswer("0", "New Delhi"),
+        UserAnswer("1", "New Delhi"),
         UserAnswer("3", "Mumbai"),
     )
-    QuizScreen(state = QuizState(questionsList = dummyQns, chosenAnswers = dummyAnswers))
+    QuizScreen(
+        state = QuizState(
+            questionsList = dummyQns,
+            chosenAnswers = dummyAnswers
+        )
+    )
 }
