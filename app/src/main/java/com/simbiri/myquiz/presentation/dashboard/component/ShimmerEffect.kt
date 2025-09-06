@@ -38,8 +38,7 @@ fun ShimmerEffect(
         targetValue = 1000F,
         label = "Shimmer Loading Anim",
         animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 1000),
+            animation = tween(durationMillis = 1000),
             repeatMode = RepeatMode.Restart
         )
     )

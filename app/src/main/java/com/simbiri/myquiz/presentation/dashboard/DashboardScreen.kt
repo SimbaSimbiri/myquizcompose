@@ -3,6 +3,7 @@ package com.simbiri.myquiz.presentation.dashboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -27,19 +29,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simbiri.myquiz.domain.QuizTopic
 import com.simbiri.myquiz.presentation.common_component.ErrorScreen
+import com.simbiri.myquiz.presentation.dashboard.component.NameEditDialog
 import com.simbiri.myquiz.presentation.dashboard.component.ShimmerEffect
 import com.simbiri.myquiz.presentation.dashboard.component.TopicCard
 import com.simbiri.myquiz.presentation.dashboard.component.UserStatisticsCard
 
 @Composable
 fun DashBoardScreen(
-    modifier: Modifier = Modifier,
     state: DashBoardState
 ) {
+
+    NameEditDialog(
+        isDialogOpen = state.isNameEditDialogOpen,
+        textFieldValue = state.userNameTextFieldValue,
+        userNameError = state.userNameError,
+        onDialogDismiss = {},
+        onConfirmButtonClick = {},
+        onTextFieldValueChange = {}
+    )
+
     Column(modifier = Modifier.fillMaxSize()) {
         HeaderSection(
             modifier = Modifier
-                .padding(top = 40.dp, start = 10.dp, end = 10.dp),
+                .fillMaxWidth(),
             userName = state.userName,
             questionsAttempted = state.questionsAttempted,
             correctAnswers = state.correctAnswers,
@@ -63,34 +75,42 @@ private fun HeaderSection(
     userName: String, questionsAttempted: Int, correctAnswers: Int,
     onEditNameClick: () -> Unit
 ) {
-    Column(modifier = modifier) {
-        Text(
-            text = "Hello",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Row {
+    FlowRow (
+        modifier= modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+        Column(modifier = Modifier
+        .padding(top = 40.dp, start = 10.dp, end = 10.dp),
+        ) {
             Text(
-                text = userName,
-                style = MaterialTheme.typography.headlineMedium
+                text = "Hello",
+                style = MaterialTheme.typography.bodyMedium
             )
 
-            IconButton(
-                modifier = Modifier.offset(x = (-10).dp, y = (-20).dp),
-                onClick = onEditNameClick
-            ) {
-                Icon(
-                    modifier = Modifier.size(15.dp),
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Name"
-
+            Row {
+                Text(
+                    text = userName,
+                    style = MaterialTheme.typography.headlineMedium
                 )
+
+                IconButton(
+                    modifier = Modifier.offset(x = (-10).dp, y = (-20).dp),
+                    onClick = onEditNameClick
+                ) {
+                    Icon(
+                        modifier = Modifier.size(15.dp),
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit Name"
+
+                    )
+                }
             }
+
         }
-
-
-
         UserStatisticsCard(
+            modifier= Modifier
+                .widthIn(max= 400.dp)
+                .padding(10.dp),
             questionsAttempted = questionsAttempted,
             correctAnswers = correctAnswers
         )
@@ -112,7 +132,7 @@ private fun QuizTopicSection(
             style = MaterialTheme.typography.titleLarge
         )
 
-        if (errorMessage != null){
+        if (!errorMessage.isNullOrEmpty()){
             ErrorScreen(
                 modifier = Modifier.fillMaxWidth().padding(20.dp),
                 onRefreshIconClick = onRefreshIconClick,
@@ -156,6 +176,7 @@ private fun QuizTopicSection(
 }
 
 @Preview(showBackground = true)
+//@PreviewScreenSizes
 @Composable
 fun DashBoardScreenPreview() {
     val dummyTopics = List(7){index->
@@ -172,7 +193,8 @@ fun DashBoardScreenPreview() {
             correctAnswers = 7,
             quizTopics = dummyTopics,
             isLoading = false,
-            errorMessage = "Something went wrong"
+            errorMessage = "",
+            isNameEditDialogOpen = true
         )
     )
 }
