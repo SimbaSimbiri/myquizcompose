@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import com.simbiri.myquiz.domain.QuizQuestion
@@ -39,7 +38,9 @@ import com.simbiri.myquiz.presentation.quiz.component.SubmitQuizDialog
 
 @Composable
 fun QuizScreen(
-    state: QuizState
+    state: QuizState,
+    navigateToDashBoardScreen: () -> Unit,
+    navigateToResultScreen: () -> Unit
 ) {
     SubmitQuizDialog(
         isDialogOpen = state.isSubmitQuizDialogOpen,
@@ -56,7 +57,7 @@ fun QuizScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         QuizScreenTopBar(
             title = state.topBarTitle,
-            onExitQuizClick = {}
+            onExitQuizClick = navigateToDashBoardScreen
         )
 
         if (state.isLoading) {
@@ -83,7 +84,9 @@ fun QuizScreen(
                 }
 
                 else -> {
-                    QuizScreenContent(state = state)
+                    QuizScreenContent(state = state,
+                        onSubmitButtonClick = navigateToResultScreen
+                    )
                 }
             }
         }
@@ -94,7 +97,11 @@ fun QuizScreen(
 }
 
 @Composable
-private fun QuizScreenContent(modifier: Modifier = Modifier, state: QuizState) {
+private fun QuizScreenContent(
+    modifier: Modifier = Modifier,
+    state: QuizState,
+    onSubmitButtonClick: () -> Unit
+) {
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -127,7 +134,7 @@ private fun QuizScreenContent(modifier: Modifier = Modifier, state: QuizState) {
             isNextEnabled = state.currentQuestionIdx != state.questionsList.lastIndex,
             onPreviousClick = {},
             onNextClick = {},
-            onSubmitClick = {}
+            onSubmitClick = onSubmitButtonClick
 
         )
     }
@@ -266,7 +273,9 @@ fun QuizScreenPreview() {
     QuizScreen(
         state = QuizState(
             questionsList = dummyQns,
-            chosenAnswers = dummyAnswers
-        )
+            chosenAnswers = dummyAnswers,
+        ),
+        navigateToDashBoardScreen = {},
+        navigateToResultScreen = {}
     )
 }

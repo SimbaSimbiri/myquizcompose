@@ -29,7 +29,8 @@ import com.simbiri.myquiz.presentation.issue_report.component.QuestionCard
 @Composable
 fun IssueReportScreen(
     modifier: Modifier = Modifier,
-    state: IssueReportState
+    state: IssueReportState,
+    onBackButtonClick: () -> Unit,
 ) {
 
     Column(
@@ -37,7 +38,7 @@ fun IssueReportScreen(
     ) {
         IssueReportTopBar(
             title = "Report an Issue",
-            onBackButtonClick = {}
+            onBackButtonClick = onBackButtonClick
         )
 
         Column(
@@ -169,7 +170,8 @@ private fun IssueReportScreenPreview() {
                 topicCode = 1
             ),
             selectedIssueType = IssueType.INCORRECT_ANSWER,
-        )
+        ),
+        onBackButtonClick = {}
     )
 
 

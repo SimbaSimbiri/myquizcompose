@@ -36,7 +36,9 @@ import com.simbiri.myquiz.presentation.theme.customGreen
 @Composable
 fun ResultScreen(
     modifier: Modifier = Modifier,
-    state: ResultState
+    state: ResultState,
+    onReportClick: (String) -> Unit,
+    onStartNewQuizClick: () -> Unit
 ) {
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -67,7 +69,7 @@ fun ResultScreen(
                 QuestionItem(
                     question = question,
                     userSelectedAnswer = userAnswer?.selectedOption,
-                    onReportIconClick = {}
+                    onReportIconClick = { onReportClick(question.id) }
                 )
 
             }
@@ -77,7 +79,8 @@ fun ResultScreen(
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.CenterHorizontally),
-            onClick = {}) {
+            onClick = onStartNewQuizClick
+        ) {
             Text("Start New Quiz")
         }
 
@@ -211,6 +214,8 @@ private fun ResultScreenPreview() {
             totalQuestions = 10,
             quizQuestions = dummyQns,
             userAnswers = dummyAnswers
-        )
+        ),
+        onReportClick = {},
+        onStartNewQuizClick = {}
     )
 }

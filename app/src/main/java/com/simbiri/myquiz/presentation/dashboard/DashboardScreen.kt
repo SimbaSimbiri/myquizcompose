@@ -36,7 +36,8 @@ import com.simbiri.myquiz.presentation.dashboard.component.UserStatisticsCard
 
 @Composable
 fun DashBoardScreen(
-    state: DashBoardState
+    state: DashBoardState,
+    onTopicCardClick: (Int) -> Unit
 ) {
 
     NameEditDialog(
@@ -63,7 +64,8 @@ fun DashBoardScreen(
             quizTopics = state.quizTopics,
             isTopicsLoading = state.isLoading,
             errorMessage = state.errorMessage,
-            onRefreshIconClick = {}
+            onRefreshIconClick = {},
+            onTopicCardClick= onTopicCardClick
         )
     }
 
@@ -109,7 +111,7 @@ private fun HeaderSection(
         }
         UserStatisticsCard(
             modifier= Modifier
-                .widthIn(max= 400.dp)
+                .widthIn(max = 400.dp)
                 .padding(10.dp),
             questionsAttempted = questionsAttempted,
             correctAnswers = correctAnswers
@@ -123,7 +125,8 @@ private fun QuizTopicSection(
     quizTopics: List<QuizTopic>,
     isTopicsLoading: Boolean,
     errorMessage: String?,
-    onRefreshIconClick: () -> Unit
+    onRefreshIconClick: () -> Unit,
+    onTopicCardClick: (Int) -> Unit
 ){
     Column(modifier = modifier) {
         Text(
@@ -134,7 +137,9 @@ private fun QuizTopicSection(
 
         if (!errorMessage.isNullOrEmpty()){
             ErrorScreen(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
                 onRefreshIconClick = onRefreshIconClick,
                 errorMessage = errorMessage
             )
@@ -164,7 +169,7 @@ private fun QuizTopicSection(
                             .height(120.dp),
                         topicName = topic.name,
                         imageUrl = topic.imageUrl,
-                        onClick = {}
+                        onClick = { onTopicCardClick(topic.code) }
 
                     )
                 }
@@ -194,7 +199,8 @@ fun DashBoardScreenPreview() {
             quizTopics = dummyTopics,
             isLoading = false,
             errorMessage = "",
-            isNameEditDialogOpen = true
+            isNameEditDialogOpen = true,
         )
+        , onTopicCardClick = {}
     )
 }
