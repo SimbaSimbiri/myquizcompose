@@ -154,7 +154,7 @@ private fun QuizScreenContent(
                 questions = state.questionsList,
                 answers = state.chosenAnswers,
                 onOptionSelected = { questionId, answer ->
-                    onAction(QuizAction.onOptionSelected(questionId, answer))
+                    onAction(QuizAction.OnOptionSelected(questionId, answer))
                 }
             )
         }

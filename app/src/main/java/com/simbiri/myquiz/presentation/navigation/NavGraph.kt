@@ -20,6 +20,7 @@ import com.simbiri.myquiz.presentation.quiz.QuizScreen
 import com.simbiri.myquiz.presentation.quiz.QuizViewModel
 import com.simbiri.myquiz.presentation.result.ResultScreen
 import com.simbiri.myquiz.presentation.result.ResultState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NavGraph(
@@ -43,7 +44,7 @@ fun NavGraph(
             )
         }
         composable<Route.DashboardScreen>{
-            val viewModel = viewModel<DashBoardViewModel>()
+            val viewModel = koinViewModel<DashBoardViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
 
             DashBoardScreen(
@@ -54,7 +55,7 @@ fun NavGraph(
             )
         }
         composable<Route.QuizScreen>{ navBackStackEntry->
-            val viewModel = viewModel<QuizViewModel>(viewModelStoreOwner = navBackStackEntry)
+            val viewModel = koinViewModel<QuizViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
 
             QuizScreen(

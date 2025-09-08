@@ -2,17 +2,19 @@ package com.simbiri.myquiz.presentation.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.simbiri.myquiz.data.repository.QuizTopicRepoImpl
+import com.simbiri.myquiz.domain.repository.QuizTopicRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DashBoardViewModel: ViewModel() {
+class DashBoardViewModel(
+    private val quizTopicRepo: QuizTopicRepository
+): ViewModel() {
 
     private val _state= MutableStateFlow(DashBoardState())
     val state = _state.asStateFlow()
-    val quizTopicRepo = QuizTopicRepoImpl()
+
     init {
         getQuizTopics()
     }

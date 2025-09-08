@@ -1,24 +1,22 @@
 package com.simbiri.myquiz.presentation.quiz
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
-import com.simbiri.myquiz.data.repository.QuizQuestionRepoImpl
 import com.simbiri.myquiz.domain.model.UserAnswer
-import com.simbiri.myquiz.presentation.navigation.Route
+import com.simbiri.myquiz.domain.repository.QuizQuestionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class QuizViewModel: ViewModel() {
+class QuizViewModel(
+    private val quizQuestionRepo: QuizQuestionRepository
+): ViewModel() {
 
     private val _state = MutableStateFlow(QuizState())
     val state = _state.asStateFlow()
 
-    private val quizQuestionRepo = QuizQuestionRepoImpl()
-/*
+    /*
     private val savedStateHandle = SavedStateHandle()
     private val route : Route.QuizScreen = savedStateHandle.toRoute<Route.QuizScreen>()
 
@@ -46,7 +44,7 @@ class QuizViewModel: ViewModel() {
                 _state.update { it.copy(currentQuestionIdx = action.questionIdx) }
             }
 
-            is QuizAction.onOptionSelected -> {
+            is QuizAction.OnOptionSelected -> {
 
                 val newAnswer = UserAnswer(action.questionId, action.answer)
                 val currAnswers =  state.value.chosenAnswers.toMutableList()

@@ -9,10 +9,10 @@ import io.ktor.client.request.get
 
 class KtorRemoteDataQuizSource(
     private val httpClient: HttpClient
-){
+): RemoteQuizDataSource {
     // class with all the functions that will call the API
 
-    suspend fun getQuizTopics(): List<QuizTopicDto>?{
+    override suspend fun getQuizTopics(): List<QuizTopicDto>?{
         return try {
             val response = httpClient.get("$BASE_URL/quiz/topics")
             response.body<List<QuizTopicDto>>()
@@ -23,7 +23,7 @@ class KtorRemoteDataQuizSource(
         }
     }
 
-    suspend fun getQuizQuestions(): List<QuizQuestionDto>?{
+    override suspend fun getQuizQuestions(): List<QuizQuestionDto>?{
         return try {
             val response = httpClient.get("$BASE_URL/quiz/questions/random")
             response.body<List<QuizQuestionDto>>()
@@ -34,7 +34,7 @@ class KtorRemoteDataQuizSource(
         }
     }
 
-    suspend fun getQuizQuestionsByTopic(topicCode: Int): List<QuizQuestionDto>?{
+    /*suspend fun getQuizQuestionsByTopic(topicCode: Int): List<QuizQuestionDto>?{
         return try {
             val response = httpClient.get("$BASE_URL/quiz/questions?topicCode=$topicCode")
             response.body<List<QuizQuestionDto>>()
@@ -43,7 +43,7 @@ class KtorRemoteDataQuizSource(
             e.printStackTrace()
             null
         }
-    }
+    }*/
 
 
 }
