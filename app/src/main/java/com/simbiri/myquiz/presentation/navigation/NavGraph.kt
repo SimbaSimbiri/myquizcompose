@@ -17,7 +17,6 @@ import com.simbiri.myquiz.presentation.dashboard.DashBoardViewModel
 import com.simbiri.myquiz.presentation.issue_report.IssueReportScreen
 import com.simbiri.myquiz.presentation.issue_report.IssueReportState
 import com.simbiri.myquiz.presentation.quiz.QuizScreen
-import com.simbiri.myquiz.presentation.quiz.QuizState
 import com.simbiri.myquiz.presentation.quiz.QuizViewModel
 import com.simbiri.myquiz.presentation.result.ResultScreen
 import com.simbiri.myquiz.presentation.result.ResultState
@@ -55,7 +54,7 @@ fun NavGraph(
             )
         }
         composable<Route.QuizScreen>{ navBackStackEntry->
-            val viewModel = viewModel<QuizViewModel>()
+            val viewModel = viewModel<QuizViewModel>(viewModelStoreOwner = navBackStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
 
             QuizScreen(
@@ -69,7 +68,8 @@ fun NavGraph(
                             inclusive= true
                         }
                     }
-                }
+                },
+                onAction = viewModel::onAction
             )
         }
         composable<Route.ResultScreen>{

@@ -25,7 +25,18 @@ class KtorRemoteDataQuizSource(
 
     suspend fun getQuizQuestions(): List<QuizQuestionDto>?{
         return try {
-            val response = httpClient.get("$BASE_URL/quiz/questions")
+            val response = httpClient.get("$BASE_URL/quiz/questions/random")
+            response.body<List<QuizQuestionDto>>()
+
+        }catch (e: Exception){
+            e.printStackTrace()
+            null
+        }
+    }
+
+    suspend fun getQuizQuestionsByTopic(topicCode: Int): List<QuizQuestionDto>?{
+        return try {
+            val response = httpClient.get("$BASE_URL/quiz/questions?topicCode=$topicCode")
             response.body<List<QuizQuestionDto>>()
 
         }catch (e: Exception){

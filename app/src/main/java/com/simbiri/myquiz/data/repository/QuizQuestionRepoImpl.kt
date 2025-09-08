@@ -15,4 +15,9 @@ class QuizQuestionRepoImpl: QuizQuestionRepository {
         val quizQuestionDtoList = remoteDataSource.getQuizQuestions()
         return quizQuestionDtoList?.toQuizQuestions()
     }
+
+    override suspend fun getQuizQuestionsByTopic(topicCode: Int): List<QuizQuestion>? {
+        val quizQuestionDtoList = remoteDataSource.getQuizQuestionsByTopic(topicCode)
+        return quizQuestionDtoList?.toQuizQuestions()
+    }
 }
