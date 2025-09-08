@@ -1,4 +1,4 @@
-package com.simbiri.myquiz.domain
+package com.simbiri.myquiz.domain.model
 
 data class UserAnswer(
     val questionId: String,

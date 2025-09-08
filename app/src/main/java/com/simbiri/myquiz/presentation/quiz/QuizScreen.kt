@@ -27,8 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import com.simbiri.myquiz.domain.QuizQuestion
-import com.simbiri.myquiz.domain.UserAnswer
+import com.simbiri.myquiz.domain.model.QuizQuestion
+import com.simbiri.myquiz.domain.model.UserAnswer
 import com.simbiri.myquiz.presentation.common_component.ErrorScreen
 import com.simbiri.myquiz.presentation.quiz.component.ExitQuizDialog
 import com.simbiri.myquiz.presentation.quiz.component.QuizScreenLoadingContent

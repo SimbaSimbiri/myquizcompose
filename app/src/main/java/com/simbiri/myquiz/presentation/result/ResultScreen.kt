@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.simbiri.myquiz.R
-import com.simbiri.myquiz.domain.QuizQuestion
-import com.simbiri.myquiz.domain.UserAnswer
+import com.simbiri.myquiz.domain.model.QuizQuestion
+import com.simbiri.myquiz.domain.model.UserAnswer
 import com.simbiri.myquiz.presentation.theme.customGreen
 
 @Composable

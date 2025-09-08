@@ -24,7 +24,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.simbiri.myquiz.domain.QuizQuestion
+import com.simbiri.myquiz.domain.model.QuizQuestion
 
 @Composable
 fun QuestionCard(

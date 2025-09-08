@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.simbiri.myquiz.domain.QuizQuestion
+import com.simbiri.myquiz.domain.model.QuizQuestion
 import com.simbiri.myquiz.presentation.issue_report.component.IssueReportTopBar
 import com.simbiri.myquiz.presentation.issue_report.component.QuestionCard
 

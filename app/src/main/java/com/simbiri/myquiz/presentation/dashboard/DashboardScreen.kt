@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.simbiri.myquiz.domain.QuizTopic
+import com.simbiri.myquiz.domain.model.QuizTopic
 import com.simbiri.myquiz.presentation.common_component.ErrorScreen
 import com.simbiri.myquiz.presentation.dashboard.component.NameEditDialog
 import com.simbiri.myquiz.presentation.dashboard.component.ShimmerEffect

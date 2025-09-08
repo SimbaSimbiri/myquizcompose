@@ -1,6 +1,6 @@
 package com.simbiri.myquiz.presentation.dashboard
 
-import com.simbiri.myquiz.domain.QuizTopic
+import com.simbiri.myquiz.domain.model.QuizTopic
 
 data class DashBoardState(
     val userName : String = "Android Developer",

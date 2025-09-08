@@ -1,6 +1,6 @@
 package com.simbiri.myquiz.presentation.issue_report
 
-import com.simbiri.myquiz.domain.QuizQuestion
+import com.simbiri.myquiz.domain.model.QuizQuestion
 
 data class IssueReportState(
     val quizQuestion: QuizQuestion? = null,

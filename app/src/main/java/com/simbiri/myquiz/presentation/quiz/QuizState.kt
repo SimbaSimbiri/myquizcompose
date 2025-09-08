@@ -1,7 +1,7 @@
 package com.simbiri.myquiz.presentation.quiz
 
-import com.simbiri.myquiz.domain.QuizQuestion
-import com.simbiri.myquiz.domain.UserAnswer
+import com.simbiri.myquiz.domain.model.QuizQuestion
+import com.simbiri.myquiz.domain.model.UserAnswer
 
 data class QuizState(
     val topBarTitle: String = "Quiz",
