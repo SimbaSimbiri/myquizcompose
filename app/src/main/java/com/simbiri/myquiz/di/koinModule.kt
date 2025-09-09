@@ -1,5 +1,8 @@
 package com.simbiri.myquiz.di
 
+import com.simbiri.myquiz.data.local.DatabaseFactory
+import com.simbiri.myquiz.data.local.QuizDatabase
+import com.simbiri.myquiz.data.local.dao.QuizTopicDao
 import com.simbiri.myquiz.data.remote.HttpClientFactory
 import com.simbiri.myquiz.data.remote.KtorRemoteDataQuizSource
 import com.simbiri.myquiz.data.remote.RemoteQuizDataSource
@@ -19,6 +22,10 @@ val koinModule= module {
 
     single<HttpClient>{ HttpClientFactory.create() }
     singleOf(::KtorRemoteDataQuizSource).bind<RemoteQuizDataSource>()
+
+    // database and its dao for every entity
+    single<QuizDatabase>{ DatabaseFactory.create(get()) }
+    single<QuizTopicDao>{ get<QuizDatabase>().quizTopicDao()}
 
     singleOf(::QuizQuestionRepoImpl).bind<QuizQuestionRepository>()
     singleOf(::QuizTopicRepoImpl).bind<QuizTopicRepository>()

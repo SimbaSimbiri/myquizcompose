@@ -3,47 +3,34 @@ package com.simbiri.myquiz.data.remote
 import com.simbiri.myquiz.data.remote.dto.QuizQuestionDto
 import com.simbiri.myquiz.data.remote.dto.QuizTopicDto
 import com.simbiri.myquiz.data.util.Constants.BASE_URL
+import com.simbiri.myquiz.domain.util.DataError
+import com.simbiri.myquiz.domain.util.ResultType
 import io.ktor.client.HttpClient
+import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.call.body
+import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.request.get
+import io.ktor.serialization.JsonConvertException
+import io.ktor.util.network.UnresolvedAddressException
+import java.net.UnknownHostException
 
 class KtorRemoteDataQuizSource(
     private val httpClient: HttpClient
 ): RemoteQuizDataSource {
-    // class with all the functions that will call the API
 
-    override suspend fun getQuizTopics(): List<QuizTopicDto>?{
-        return try {
-            val response = httpClient.get("$BASE_URL/quiz/topics")
-            response.body<List<QuizTopicDto>>()
+    override suspend fun getQuizTopics(): ResultType<List<QuizTopicDto>, DataError>{
 
-        }catch (e: Exception){
-            e.printStackTrace()
-            null
+        return safeCall<List<QuizTopicDto>>{
+            httpClient.get("$BASE_URL/quiz/topics")
         }
     }
 
-    override suspend fun getQuizQuestions(): List<QuizQuestionDto>?{
-        return try {
-            val response = httpClient.get("$BASE_URL/quiz/questions/random")
-            response.body<List<QuizQuestionDto>>()
+    override suspend fun getQuizQuestions(): ResultType<List<QuizQuestionDto>, DataError>{
 
-        }catch (e: Exception){
-            e.printStackTrace()
-            null
+        return safeCall<List<QuizQuestionDto>>{
+            httpClient.get("$BASE_URL/quiz/questions/random")
         }
     }
-
-    /*suspend fun getQuizQuestionsByTopic(topicCode: Int): List<QuizQuestionDto>?{
-        return try {
-            val response = httpClient.get("$BASE_URL/quiz/questions?topicCode=$topicCode")
-            response.body<List<QuizQuestionDto>>()
-
-        }catch (e: Exception){
-            e.printStackTrace()
-            null
-        }
-    }*/
 
 
 }

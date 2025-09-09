@@ -3,6 +3,10 @@ package com.simbiri.myquiz.presentation.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simbiri.myquiz.domain.repository.QuizTopicRepository
+import com.simbiri.myquiz.domain.util.DataError
+import com.simbiri.myquiz.domain.util.onFailure
+import com.simbiri.myquiz.domain.util.onSuccess
+import com.simbiri.myquiz.presentation.util.getErrorMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -21,13 +25,27 @@ class DashBoardViewModel(
 
     private fun getQuizTopics() {
         viewModelScope.launch {
-            val quizTopics = quizTopicRepo.getQuizTopics()
-
-            if (quizTopics != null) {
-                _state.update { dashBoardState ->
-                    dashBoardState.copy(quizTopics = quizTopics)
-                }
-            }
+            _state.update { it.copy(isLoading = true) }
+           quizTopicRepo.getQuizTopics()
+               .onSuccess {
+                   quizTopics ->
+                   _state.update { dashBoardState ->
+                       dashBoardState.copy(
+                           quizTopics = quizTopics,
+                           errorMessage = null,
+                           isLoading = false
+                       )
+                   }
+               }
+               .onFailure { error ->
+                   _state.update {
+                       it.copy(
+                           quizTopics = emptyList(),
+                           errorMessage = error.getErrorMessage(),
+                           isLoading = false
+                       )
+                   }
+               }
 
         }
 

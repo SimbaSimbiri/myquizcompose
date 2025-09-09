@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simbiri.myquiz.domain.model.UserAnswer
 import com.simbiri.myquiz.domain.repository.QuizQuestionRepository
+import com.simbiri.myquiz.domain.util.DataError
+import com.simbiri.myquiz.domain.util.onFailure
+import com.simbiri.myquiz.domain.util.onSuccess
+import com.simbiri.myquiz.presentation.util.getErrorMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -65,12 +69,27 @@ class QuizViewModel(
     private fun getQuizQuestions(){
 
         viewModelScope.launch {
-            val quizQuestions = quizQuestionRepo.getQuizQuestions()
-            if (quizQuestions != null) {
-                _state.update { quizState ->
-                    quizState.copy(questionsList = quizQuestions)
+            _state.update { it.copy(isLoading = true) }
+            quizQuestionRepo.getQuizQuestions()
+                .onSuccess { quizQuestions ->
+                    _state.update { quizState ->
+                        quizState.copy(
+                            questionsList = quizQuestions,
+                            errorMessage = null,
+                            isLoading = false
+                            )
+                    }
+                }.onFailure { error->
+
+                    _state.update { quizState ->
+                        quizState.copy(
+                            questionsList = emptyList(),
+                            errorMessage = error.getErrorMessage(),
+                            isLoading = false
+                        )
+                    }
                 }
-            }
+
         }
 
     }

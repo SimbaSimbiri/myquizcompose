@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,7 +60,7 @@ fun TopicCard(
 
                 Text(
                     text = topicName,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleMedium
                 )
 
             }
@@ -69,9 +70,10 @@ fun TopicCard(
         TopicImage(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(end = 10.dp)
-                .size(100.dp)
-                .offset(y = (-20).dp),
+                .padding( 5.dp)
+                .size(70.dp)
+                .clip(MaterialTheme.shapes.small)
+                ,
             imageUrl = imageUrl
         )
     }

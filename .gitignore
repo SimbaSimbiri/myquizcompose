@@ -1,15 +1,52 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+# --- OS cruft ---
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+Thumbs.db
+
+# --- IDE (IntelliJ/Android Studio) ---
+*.iml
+.idea/
+!.idea/codeStyles
+!.idea/runConfigurations
+
+# --- Gradle / Build outputs ---
+.gradle/
+**/build/
+.cxx/
+.externalNativeBuild/
+captures/
+
+# --- Local machine config (never commit) ---
 local.properties
+
+# --- Logs, profiles, misc ---
+*.log
+*.hprof
+.vscode/
+
+# --- Signing / secrets (adjust if you intentionally commit some) ---
+*.jks
+*.keystore
+**/keystore.properties
+**/signing.properties
+**/*.keystore.properties
+
+# --- Room / SQLite runtime databases (do NOT commit) ---
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+
+# If you ever pull device DBs into your project for debugging:
+app/**/databases/*.db*
+app/**/databases/*.sqlite*
+
+# Keep Room exported schemas under version control
+!app/schemas/**
+
+# --- Compose compiler optional reports (ignore if you enable them) ---
+compose-metrics/
+compose-reports/
