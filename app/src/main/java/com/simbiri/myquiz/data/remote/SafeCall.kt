@@ -10,10 +10,15 @@ import io.ktor.serialization.JsonConvertException
 import io.ktor.util.network.UnresolvedAddressException
 import java.net.UnknownHostException
 
+// we inline it so the data type we expect from the server is known at compile time
+// this will also ensure the right @Serializable class is used for json conversion
+// without this, the generic data type would be erased at compile time
 suspend inline fun <reified T> safeCall(
     execute: () -> HttpResponse
 ): ResultType<T, DataError>
 {
+    // the execute function is the lambda that sends a get request to the server
+    // httpClient.get("$BASE_URL/...)
     val response = try {
         execute()
     } catch (e: UnknownHostException){
@@ -30,6 +35,8 @@ suspend inline fun <reified T> safeCall(
     return when (response.status.value){
         in 200..299 -> {
             try {
+                // here we get the body of the json object with List<QuizTopicDto/QuizQuestionDto>
+                // which were our serialized classes that our json will automatically be mapped to
                 val topics = response.body<T>()
                 ResultType.Success(topics)
             } catch (e: JsonConvertException){
@@ -46,7 +53,5 @@ suspend inline fun <reified T> safeCall(
         in 500..599 -> ResultType.Failure(DataError.ServerError)
         else -> ResultType.Failure(DataError.Unknown())
     }
-
-
 
 }

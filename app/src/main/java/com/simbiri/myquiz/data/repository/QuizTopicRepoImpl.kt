@@ -4,14 +4,14 @@ import com.simbiri.myquiz.data.local.dao.QuizTopicDao
 import com.simbiri.myquiz.data.mapper.entityToQuizTopics
 import com.simbiri.myquiz.data.mapper.toQuizTopics
 import com.simbiri.myquiz.data.mapper.toQuizTopicsEntities
-import com.simbiri.myquiz.data.remote.RemoteQuizDataSource
+import com.simbiri.myquiz.data.remote.RemoteDataSource
 import com.simbiri.myquiz.domain.model.QuizTopic
 import com.simbiri.myquiz.domain.repository.QuizTopicRepository
 import com.simbiri.myquiz.domain.util.DataError
 import com.simbiri.myquiz.domain.util.ResultType
 
 class QuizTopicRepoImpl(
-    private val remoteDataSource: RemoteQuizDataSource,
+    private val remoteDataSource: RemoteDataSource,
     private val topicDao: QuizTopicDao
 ) : QuizTopicRepository {
 

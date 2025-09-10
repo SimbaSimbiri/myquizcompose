@@ -4,8 +4,8 @@ import com.simbiri.myquiz.data.local.DatabaseFactory
 import com.simbiri.myquiz.data.local.QuizDatabase
 import com.simbiri.myquiz.data.local.dao.QuizTopicDao
 import com.simbiri.myquiz.data.remote.HttpClientFactory
-import com.simbiri.myquiz.data.remote.KtorRemoteDataQuizSource
-import com.simbiri.myquiz.data.remote.RemoteQuizDataSource
+import com.simbiri.myquiz.data.remote.KtorRemoteDataSource
+import com.simbiri.myquiz.data.remote.RemoteDataSource
 import com.simbiri.myquiz.data.repository.QuizQuestionRepoImpl
 import com.simbiri.myquiz.data.repository.QuizTopicRepoImpl
 import com.simbiri.myquiz.domain.repository.QuizQuestionRepository
@@ -19,9 +19,10 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val koinModule= module {
-
+    // we create the single instance of our okhttp client and the service/ remote source getting
+    // data from the ktor server
     single<HttpClient>{ HttpClientFactory.create() }
-    singleOf(::KtorRemoteDataQuizSource).bind<RemoteQuizDataSource>()
+    singleOf(::KtorRemoteDataSource).bind<RemoteDataSource>()
 
     // database and its dao for every entity
     single<QuizDatabase>{ DatabaseFactory.create(get()) }

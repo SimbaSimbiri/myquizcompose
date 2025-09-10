@@ -1,15 +1,14 @@
 package com.simbiri.myquiz.data.repository
 
-import com.simbiri.myquiz.data.local.dao.QuizTopicDao
 import com.simbiri.myquiz.data.mapper.toQuizQuestions
-import com.simbiri.myquiz.data.remote.RemoteQuizDataSource
+import com.simbiri.myquiz.data.remote.RemoteDataSource
 import com.simbiri.myquiz.domain.model.QuizQuestion
 import com.simbiri.myquiz.domain.repository.QuizQuestionRepository
 import com.simbiri.myquiz.domain.util.DataError
 import com.simbiri.myquiz.domain.util.ResultType
 
 class QuizQuestionRepoImpl(
-    private val remoteDataSource: RemoteQuizDataSource,
+    private val remoteDataSource: RemoteDataSource,
 ): QuizQuestionRepository {
 
     override suspend fun getQuizQuestions(): ResultType<List<QuizQuestion>, DataError>{

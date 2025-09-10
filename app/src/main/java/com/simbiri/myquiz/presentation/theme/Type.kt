@@ -2,6 +2,8 @@ package com.simbiri.myquiz.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.simbiri.myquiz.R
@@ -12,19 +14,16 @@ val provider = GoogleFont.Provider(
     certificates = R.array.com_google_android_gms_fonts_certs
 )
 
+private val tinos = GoogleFont("Tinos")
+
 val bodyFontFamily = FontFamily(
-    Font(
-        googleFont = GoogleFont("Ubuntu"),
-        fontProvider = provider,
-    )
+    Font(googleFont = tinos, fontProvider = provider, weight = FontWeight.Normal),
+    Font(googleFont = tinos, fontProvider = provider, weight = FontWeight.Bold),
+    Font(googleFont = tinos, fontProvider = provider, weight = FontWeight.Normal, style = FontStyle.Italic),
+    Font(googleFont = tinos, fontProvider = provider, weight = FontWeight.Bold,   style = FontStyle.Italic),
 )
 
-val displayFontFamily = FontFamily(
-    Font(
-        googleFont = GoogleFont("Ubuntu"),
-        fontProvider = provider,
-    )
-)
+val displayFontFamily = bodyFontFamily
 
 // Default Material 3 typography values
 val baseline = Typography()

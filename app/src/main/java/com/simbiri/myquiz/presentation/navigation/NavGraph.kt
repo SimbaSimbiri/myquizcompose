@@ -43,6 +43,7 @@ fun NavGraph(
                 topicCode = 1
             )
         }
+
         composable<Route.DashboardScreen>{
             val viewModel = koinViewModel<DashBoardViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()

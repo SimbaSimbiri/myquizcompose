@@ -17,21 +17,27 @@ import kotlinx.serialization.json.Json
 object HttpClientFactory {
 
     fun create(): HttpClient{
-        return HttpClient(OkHttp){
+        return HttpClient(OkHttp){ // OKHttp is specifically for android REST calls
+            // we install the ContentNegotiation plugin the same way we did in the ktor
+            // backend in configSerialization
             install(ContentNegotiation){
                 json(json = Json{
                     ignoreUnknownKeys = true
                     prettyPrint = true
                 })
             }
+            // we also install the HttpTimeout plugin to handle network timeouts
             install(HttpTimeout){
                 socketTimeoutMillis = 30_000L
                 requestTimeoutMillis= 30_000L
             }
+            // we also configure Logging the same way we did with configLogging in backend
+            // using CallLogging
             install(Logging){
                 level= LogLevel.ALL
                 logger= Logger.ANDROID
             }
+            // we specify that our client will receive JSON requests as default, not xml or other types
             defaultRequest {
                 contentType(ContentType.Application.Json)
             }

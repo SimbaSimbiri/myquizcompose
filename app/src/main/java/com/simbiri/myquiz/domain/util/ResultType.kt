@@ -1,6 +1,7 @@
 package com.simbiri.myquiz.domain.util
 
-// wrapper interface for handling errors and success responses
+// wrapper interface for handling errors and success responses when we retrieve domain data
+// from either the database or the ktor server
 sealed interface ResultType <out D, out E: Error> {
     // success output value D can be of any datatype
     data class Success<out D>(val data: D) : ResultType<D, Nothing>

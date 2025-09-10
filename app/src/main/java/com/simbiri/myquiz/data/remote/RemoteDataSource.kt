@@ -5,7 +5,7 @@ import com.simbiri.myquiz.data.remote.dto.QuizTopicDto
 import com.simbiri.myquiz.domain.util.DataError
 import com.simbiri.myquiz.domain.util.ResultType
 
-interface RemoteQuizDataSource {
+interface RemoteDataSource {
     // interface with all the REST API calls
 
     suspend fun getQuizTopics(): ResultType<List<QuizTopicDto>, DataError>
