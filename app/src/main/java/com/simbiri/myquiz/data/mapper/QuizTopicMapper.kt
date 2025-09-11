@@ -24,7 +24,7 @@ private fun QuizTopicDto.toQuizTopicEntity() = QuizTopicEntity(
 fun List<QuizTopicDto>.toQuizTopicsEntities() = map { it.toQuizTopicEntity() }
 
 // Entity to Domain mappers
-private fun QuizTopicEntity.entityToQuizTopic() = QuizTopic(
+fun QuizTopicEntity.entityToQuizTopic() = QuizTopic(
     id = id,
     name = name,
     imageUrl = imageUrl, // since we already saved onto the database the full url

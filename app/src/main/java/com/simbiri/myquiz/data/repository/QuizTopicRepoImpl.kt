@@ -1,6 +1,8 @@
 package com.simbiri.myquiz.data.repository
 
 import com.simbiri.myquiz.data.local.dao.QuizTopicDao
+import com.simbiri.myquiz.data.local.entity.QuizTopicEntity
+import com.simbiri.myquiz.data.mapper.entityToQuizTopic
 import com.simbiri.myquiz.data.mapper.entityToQuizTopics
 import com.simbiri.myquiz.data.mapper.toQuizTopics
 import com.simbiri.myquiz.data.mapper.toQuizTopicsEntities
@@ -36,5 +38,19 @@ class QuizTopicRepoImpl(
             }
         }
 
+    }
+
+    override suspend fun getQuizTopicsByCode(topicCode: Int): ResultType<QuizTopic, DataError> {
+        return try {
+            val topicEntity  = topicDao.getQuizTopicByCode(topicCode)
+            if (topicEntity != null){
+                ResultType.Success(topicEntity.entityToQuizTopic())
+            } else{
+                ResultType.Failure(DataError.Unknown(errorMessage = "Topic not found"))
+            }
+
+        } catch (e: Exception){
+            ResultType.Failure(DataError.Unknown(e.message))
+        }
     }
 }

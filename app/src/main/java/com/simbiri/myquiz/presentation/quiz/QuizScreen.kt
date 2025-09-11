@@ -1,5 +1,6 @@
 package com.simbiri.myquiz.presentation.quiz
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import com.simbiri.myquiz.domain.model.QuizQuestion
@@ -39,30 +41,50 @@ import com.simbiri.myquiz.presentation.quiz.component.QuizScreenLoadingContent
 import com.simbiri.myquiz.presentation.quiz.component.QuizScreenTopBar
 import com.simbiri.myquiz.presentation.quiz.component.QuizSubmitButtons
 import com.simbiri.myquiz.presentation.quiz.component.SubmitQuizDialog
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun QuizScreen(
     state: QuizState,
+    event: Flow<QuizEvent>,
     navigateToDashBoardScreen: () -> Unit,
     navigateToResultScreen: () -> Unit,
     onAction: (QuizAction) -> Unit
 ) {
+
+    val context = LocalContext.current
+    // all code in the Launched Effect block will not be affected by recomposition of the screen
+    // unless the key provided changes, which in our case Unit never will
+
+    LaunchedEffect(key1 = Unit) {
+        event.collect { event ->
+            // we will only get the code from the event channel
+            when (event) {
+                is QuizEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                QuizEvent.NavigateToDashBoardScreen -> navigateToDashBoardScreen()
+                QuizEvent.NavigateToResultScreen -> navigateToResultScreen()
+            }
+        }
+    }
     SubmitQuizDialog(
         isDialogOpen = state.isSubmitQuizDialogOpen,
-        onDialogDismiss = {},
-        onConfirmButtonClick = {}
+        onDialogDismiss = { onAction(QuizAction.SubmitQuizDialogDismiss)},
+        onConfirmButtonClick = { onAction(QuizAction.ConfirmSubmitQuizButtonClick)}
     )
 
     ExitQuizDialog(
         isDialogOpen = state.isExitQuizDialogOpen,
-        onDialogDismiss = {},
-        onConfirmButtonClick = {}
+        onDialogDismiss = { onAction(QuizAction.ExitQuizDialogDismiss)},
+        onConfirmButtonClick = { onAction(QuizAction.ConfirmExitQuizButtonClick)}
     )
 
     Column(modifier = Modifier.fillMaxSize()) {
         QuizScreenTopBar(
             title = state.topBarTitle,
-            onExitQuizClick = navigateToDashBoardScreen
+            onExitQuizClick = { onAction(QuizAction.ExitQuizButtonClick) },
         )
 
         if (state.isLoading) {
@@ -75,7 +97,7 @@ fun QuizScreen(
                 state.errorMessage != null -> {
                     ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
-                        onRefreshIconClick = {},
+                        onRefreshIconClick = { onAction(QuizAction.RefreshQuizButtonClick)},
                         errorMessage = state.errorMessage
                     )
                 }
@@ -83,7 +105,7 @@ fun QuizScreen(
                 state.questionsList.isEmpty() -> {
                     ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
-                        onRefreshIconClick = {},
+                        onRefreshIconClick = { onAction(QuizAction.RefreshQuizButtonClick)},
                         errorMessage = "No questions available"
                     )
                 }
@@ -91,7 +113,6 @@ fun QuizScreen(
                 else -> {
                     QuizScreenContent(
                         state = state,
-                        onSubmitButtonClick = navigateToResultScreen,
                         onAction = onAction
                     )
                 }
@@ -107,14 +128,13 @@ fun QuizScreen(
 private fun QuizScreenContent(
     modifier: Modifier = Modifier,
     state: QuizState,
-    onSubmitButtonClick: () -> Unit,
     onAction: (QuizAction) -> Unit
 ) {
     val pagerState = rememberPagerState(
-        pageCount = {state.questionsList.size}
+        pageCount = { state.questionsList.size }
     )
 
-    LaunchedEffect(key1= pagerState) {
+    LaunchedEffect(key1 = pagerState) {
         snapshotFlow { pagerState.settledPage }.collect { pageIdx ->
             onAction(QuizAction.JumpToQuestion(pageIdx))
         }
@@ -132,7 +152,7 @@ private fun QuizScreenContent(
             questions = state.questionsList,
             currentQuestionIdx = state.currentQuestionIdx,
             chosenAnswers = state.chosenAnswers,
-            onTabSelected = {idx->
+            onTabSelected = { idx ->
                 onAction(QuizAction.JumpToQuestion(idx))
             }
         )
@@ -144,7 +164,7 @@ private fun QuizScreenContent(
             modifier = Modifier
                 .weight(1f),
             state = pagerState
-        ){
+        ) {
             QuestionItem(
                 modifier = Modifier
                     .fillMaxSize()
@@ -167,7 +187,7 @@ private fun QuizScreenContent(
             isNextEnabled = state.currentQuestionIdx != state.questionsList.lastIndex,
             onPreviousClick = { onAction(QuizAction.PrevQuestionButtonClick) },
             onNextClick = { onAction(QuizAction.NextQuestionButtonClick) },
-            onSubmitClick = onSubmitButtonClick
+            onSubmitClick = { onAction(QuizAction.SubmitQuizButtonClick) }
 
         )
     }
@@ -310,6 +330,7 @@ fun QuizScreenPreview() {
         ),
         navigateToDashBoardScreen = {},
         navigateToResultScreen = {},
-        onAction = {}
+        onAction = {},
+        event = emptyFlow()
     )
 }

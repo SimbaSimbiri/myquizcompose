@@ -9,5 +9,5 @@ interface RemoteDataSource {
     // interface with all the REST API calls
 
     suspend fun getQuizTopics(): ResultType<List<QuizTopicDto>, DataError>
-    suspend fun getQuizQuestions(): ResultType<List<QuizQuestionDto>, DataError>
+    suspend fun getQuizQuestions(topicCode: Int): ResultType<List<QuizQuestionDto>, DataError>
 }

@@ -8,5 +8,6 @@ import com.simbiri.myquiz.domain.util.ResultType
 // in short we the domain and UI end don't care how the data will be sourced, be it from Server or DB
 // we also obscure the implementation of both to the data.repository layer
 interface QuizQuestionRepository {
+    suspend fun fetchSaveQuizQuestions(topicCode: Int): ResultType<List<QuizQuestion>, DataError>
     suspend fun getQuizQuestions(): ResultType<List<QuizQuestion>, DataError>
 }

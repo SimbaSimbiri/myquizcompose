@@ -10,4 +10,5 @@ import com.simbiri.myquiz.domain.util.ResultType
 // we also obscure the implementation of both to the data.repository layer
 interface QuizTopicRepository {
     suspend fun getQuizTopics(): ResultType<List<QuizTopic>, DataError>
+    suspend fun getQuizTopicsByCode(topicCode: Int): ResultType<QuizTopic, DataError>
 }

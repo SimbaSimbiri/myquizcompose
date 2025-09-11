@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,6 +19,7 @@ import com.simbiri.myquiz.presentation.quiz.QuizScreen
 import com.simbiri.myquiz.presentation.quiz.QuizViewModel
 import com.simbiri.myquiz.presentation.result.ResultScreen
 import com.simbiri.myquiz.presentation.result.ResultState
+import com.simbiri.myquiz.presentation.result.ResultViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -44,6 +44,7 @@ fun NavGraph(
             )
         }
 
+
         composable<Route.DashboardScreen>{
             val viewModel = koinViewModel<DashBoardViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -55,7 +56,7 @@ fun NavGraph(
                 }
             )
         }
-        composable<Route.QuizScreen>{ navBackStackEntry->
+        composable<Route.QuizScreen>{
             val viewModel = koinViewModel<QuizViewModel>()
             val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -71,14 +72,16 @@ fun NavGraph(
                         }
                     }
                 },
-                onAction = viewModel::onAction
+                onAction = viewModel::onAction,
+                event = viewModel.event
             )
         }
         composable<Route.ResultScreen>{
+            val viewModel = koinViewModel<ResultViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
             ResultScreen(
-                state = ResultState(
-                    quizQuestions = dummyQns,
-                ),
+                state = state,
+                event = viewModel.event,
                 onReportClick = { questionId->
                     navController.navigate(Route.IssueReportScreen(questionId))
                 },

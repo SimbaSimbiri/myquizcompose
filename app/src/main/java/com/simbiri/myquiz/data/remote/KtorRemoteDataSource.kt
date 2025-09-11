@@ -7,6 +7,7 @@ import com.simbiri.myquiz.domain.util.DataError
 import com.simbiri.myquiz.domain.util.ResultType
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 
 class KtorRemoteDataSource(
     private val httpClient: HttpClient
@@ -19,10 +20,12 @@ class KtorRemoteDataSource(
         }
     }
 
-    override suspend fun getQuizQuestions(): ResultType<List<QuizQuestionDto>, DataError>{
+    override suspend fun getQuizQuestions(topicCode: Int): ResultType<List<QuizQuestionDto>, DataError>{
 
         return safeCall<List<QuizQuestionDto>>{
-            httpClient.get("$BASE_URL/quiz/questions/random")
+            httpClient.get("$BASE_URL/quiz/questions/random"){
+                parameter("topicCode", topicCode)
+            }
         }
     }
 

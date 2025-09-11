@@ -2,6 +2,7 @@ package com.simbiri.myquiz.di
 
 import com.simbiri.myquiz.data.local.DatabaseFactory
 import com.simbiri.myquiz.data.local.QuizDatabase
+import com.simbiri.myquiz.data.local.dao.QuizQuestionDao
 import com.simbiri.myquiz.data.local.dao.QuizTopicDao
 import com.simbiri.myquiz.data.remote.HttpClientFactory
 import com.simbiri.myquiz.data.remote.KtorRemoteDataSource
@@ -12,6 +13,7 @@ import com.simbiri.myquiz.domain.repository.QuizQuestionRepository
 import com.simbiri.myquiz.domain.repository.QuizTopicRepository
 import com.simbiri.myquiz.presentation.dashboard.DashBoardViewModel
 import com.simbiri.myquiz.presentation.quiz.QuizViewModel
+import com.simbiri.myquiz.presentation.result.ResultViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -27,10 +29,13 @@ val koinModule= module {
     // database and its dao for every entity
     single<QuizDatabase>{ DatabaseFactory.create(get()) }
     single<QuizTopicDao>{ get<QuizDatabase>().quizTopicDao()}
+    single<QuizQuestionDao>{ get<QuizDatabase>().quizQuestionDao()}
+
 
     singleOf(::QuizQuestionRepoImpl).bind<QuizQuestionRepository>()
     singleOf(::QuizTopicRepoImpl).bind<QuizTopicRepository>()
 
     viewModelOf(::QuizViewModel)
     viewModelOf(::DashBoardViewModel)
+    viewModelOf(::ResultViewModel)
 }

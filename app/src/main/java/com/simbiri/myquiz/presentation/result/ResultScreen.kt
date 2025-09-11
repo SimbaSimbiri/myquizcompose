@@ -1,11 +1,14 @@
 package com.simbiri.myquiz.presentation.result
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,8 +24,10 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -32,14 +37,28 @@ import com.simbiri.myquiz.R
 import com.simbiri.myquiz.domain.model.QuizQuestion
 import com.simbiri.myquiz.domain.model.UserAnswer
 import com.simbiri.myquiz.presentation.theme.customGreen
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun ResultScreen(
     modifier: Modifier = Modifier,
     state: ResultState,
+    event: Flow<ResultEvent>,
     onReportClick: (String) -> Unit,
     onStartNewQuizClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
+    LaunchedEffect(key1= Unit) {
+        event.collect { event ->
+            when (event) {
+                is ResultEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
 
@@ -98,9 +117,9 @@ fun ScoreCard(
     totalQuestions: Int
 ) {
     val resultText = when (scorePercentage) {
-        in 71..100 -> "Congratulations!\n You did great!"
-        in 51..70 -> "Good job!\n But there's room for improvement."
-        else -> "Ooops!\n Try and study harder next time"
+        in 71..100 -> "Congratulations! You did great!"
+        in 51..70 -> "Good job! But there's room for improvement."
+        else -> "Oops! Study harder next time"
     }
     val resultIconId = when (scorePercentage) {
         in 71..100 -> R.drawable.ic_happy
@@ -183,8 +202,9 @@ private fun QuestionItem(
             text = question.explanation,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
         )
-
         HorizontalDivider()
+        Spacer(modifier= Modifier.height(20.dp))
+
     }
 }
 
@@ -216,6 +236,7 @@ private fun ResultScreenPreview() {
             userAnswers = dummyAnswers
         ),
         onReportClick = {},
-        onStartNewQuizClick = {}
+        onStartNewQuizClick = {},
+        event = emptyFlow()
     )
 }
