@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.simbiri.myquiz.domain.model.UserAnswer
 import com.simbiri.myquiz.domain.repository.QuizQuestionRepository
 import com.simbiri.myquiz.domain.repository.QuizTopicRepository
+import com.simbiri.myquiz.domain.repository.UserPreferencesRepository
 import com.simbiri.myquiz.domain.util.onFailure
 import com.simbiri.myquiz.domain.util.onSuccess
 import com.simbiri.myquiz.presentation.navigation.Route
@@ -14,6 +15,7 @@ import com.simbiri.myquiz.presentation.util.getErrorMessage
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +23,7 @@ import kotlinx.coroutines.launch
 class QuizViewModel(
     private val quizQuestionRepo: QuizQuestionRepository,
     private val topicRepository: QuizTopicRepository,
+    private val userPrefsRepository: UserPreferencesRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -28,7 +31,7 @@ class QuizViewModel(
     val state = _state.asStateFlow()
 
     private val _event = Channel<QuizEvent>()
-    val event =  _event.receiveAsFlow()
+    val event = _event.receiveAsFlow()
 
     private val topicCode = savedStateHandle.toRoute<Route.QuizScreen>().topicCode
 
@@ -73,23 +76,29 @@ class QuizViewModel(
             QuizAction.ExitQuizButtonClick -> {
                 _state.update { it.copy(isExitQuizDialogOpen = true) }
             }
+
             QuizAction.ConfirmExitQuizButtonClick -> {
                 _state.update { it.copy(isExitQuizDialogOpen = false) }
                 _event.trySend(QuizEvent.NavigateToDashBoardScreen)
             }
+
             QuizAction.ExitQuizDialogDismiss -> {
-            _state.update { it.copy(isExitQuizDialogOpen = false) }
+                _state.update { it.copy(isExitQuizDialogOpen = false) }
             }
+
             QuizAction.SubmitQuizButtonClick -> {
                 _state.update { it.copy(isSubmitQuizDialogOpen = true) }
             }
+
             QuizAction.ConfirmSubmitQuizButtonClick -> {
                 _state.update { it.copy(isSubmitQuizDialogOpen = false) }
-                saveUserAnswers()
+                submitQuiz()
             }
+
             QuizAction.SubmitQuizDialogDismiss -> {
                 _state.update { it.copy(isSubmitQuizDialogOpen = false) }
             }
+
             QuizAction.RefreshQuizButtonClick -> {
                 setUpQuiz()
             }
@@ -153,7 +162,7 @@ class QuizViewModel(
 
     }
 
-    private fun saveUserAnswers(){
+    private fun submitQuiz() {
         viewModelScope.launch {
             _state.update {
                 it.copy(
@@ -161,12 +170,8 @@ class QuizViewModel(
                     loadingMessage = "Submitting Quiz"
                 )
             }
-            quizQuestionRepo.saveUserAnswers(state.value.chosenAnswers)
-                .onFailure { error ->
-                    _event.send(QuizEvent.ShowToast(error.getErrorMessage()))
-
-                }
-
+            saveUserAnswers()
+            updateScore()
             _state.update {
                 it.copy(
                     isLoading = false,
@@ -174,8 +179,40 @@ class QuizViewModel(
                 )
             }
             _event.send(QuizEvent.NavigateToResultScreen)
-
         }
+
+    }
+
+    private suspend fun saveUserAnswers() {
+        quizQuestionRepo.saveUserAnswers(state.value.chosenAnswers)
+            .onFailure { error ->
+                _event.send(QuizEvent.ShowToast(error.getErrorMessage()))
+
+            }
+    }
+
+    private suspend fun updateScore() {
+
+        val questionsAttempted = state.value.questionsList
+        val userAnswers = state.value.chosenAnswers
+
+        val correctAnswersCount = userAnswers.count { answer ->
+            val question = questionsAttempted.find { it.id == answer.questionId }
+            question?.correctAnswer == answer.selectedOption
+        }
+
+        val previousAttempted = userPrefsRepository.getQuestionsAttempted().first()
+        val previousCorrect = userPrefsRepository.getCorrectAnswers().first()
+
+        val totalAttempted = previousAttempted + userAnswers.size
+        val totalCorrect = previousCorrect + correctAnswersCount
+
+        userPrefsRepository.saveScore(
+            questionsAttempted = totalAttempted,
+            correctAnswers = totalCorrect
+        )
+
+
     }
 
 

@@ -1,5 +1,8 @@
 package com.simbiri.myquiz.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.simbiri.myquiz.data.local.DataStoreFactory
 import com.simbiri.myquiz.data.local.DatabaseFactory
 import com.simbiri.myquiz.data.local.QuizDatabase
 import com.simbiri.myquiz.data.local.dao.QuizQuestionDao
@@ -11,9 +14,11 @@ import com.simbiri.myquiz.data.remote.RemoteDataSource
 import com.simbiri.myquiz.data.repository.IssueReportImpl
 import com.simbiri.myquiz.data.repository.QuizQuestionRepoImpl
 import com.simbiri.myquiz.data.repository.QuizTopicRepoImpl
+import com.simbiri.myquiz.data.repository.UserPreferencesRepoImpl
 import com.simbiri.myquiz.domain.repository.IssueReportRepository
 import com.simbiri.myquiz.domain.repository.QuizQuestionRepository
 import com.simbiri.myquiz.domain.repository.QuizTopicRepository
+import com.simbiri.myquiz.domain.repository.UserPreferencesRepository
 import com.simbiri.myquiz.presentation.dashboard.DashBoardViewModel
 import com.simbiri.myquiz.presentation.issue_report.IssueReportViewModel
 import com.simbiri.myquiz.presentation.quiz.QuizViewModel
@@ -36,10 +41,14 @@ val koinModule= module {
     single<QuizQuestionDao>{ get<QuizDatabase>().quizQuestionDao()}
     single<UserAnswerDao>{ get<QuizDatabase>().userAnswerDao()}
 
+    // preferences data store
+    single<DataStore<Preferences>>{ DataStoreFactory.create(get()) }
+
     // repositories
     singleOf(::QuizQuestionRepoImpl).bind<QuizQuestionRepository>()
     singleOf(::QuizTopicRepoImpl).bind<QuizTopicRepository>()
     singleOf(::IssueReportImpl).bind<IssueReportRepository>()
+    singleOf(::UserPreferencesRepoImpl).bind<UserPreferencesRepository>()
 
     // view models
     viewModelOf(::QuizViewModel)

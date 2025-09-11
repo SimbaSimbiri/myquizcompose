@@ -37,6 +37,7 @@ fun NavGraph(
 
             DashBoardScreen(
                 state = state,
+                onAction = viewModel::onAction,
                 onTopicCardClick = { topicCode->
                     navController.navigate(Route.QuizScreen(topicCode))
                 }

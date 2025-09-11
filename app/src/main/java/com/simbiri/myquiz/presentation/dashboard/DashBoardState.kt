@@ -3,7 +3,7 @@ package com.simbiri.myquiz.presentation.dashboard
 import com.simbiri.myquiz.domain.model.QuizTopic
 
 data class DashBoardState(
-    val userName : String = "Android Developer",
+    val userName : String = "",
     val questionsAttempted: Int = 0,
     val correctAnswers: Int = 0,
     val quizTopics: List<QuizTopic> = emptyList(),

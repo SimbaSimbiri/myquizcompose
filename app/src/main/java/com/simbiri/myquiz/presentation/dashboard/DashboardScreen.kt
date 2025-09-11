@@ -39,6 +39,7 @@ import com.simbiri.myquiz.presentation.dashboard.component.UserStatisticsCard
 @Composable
 fun DashBoardScreen(
     state: DashBoardState,
+    onAction: (DashboardAction) -> Unit,
     onTopicCardClick: (Int) -> Unit
 ) {
 
@@ -46,9 +47,9 @@ fun DashBoardScreen(
         isDialogOpen = state.isNameEditDialogOpen,
         textFieldValue = state.userNameTextFieldValue,
         userNameError = state.userNameError,
-        onDialogDismiss = {},
-        onConfirmButtonClick = {},
-        onTextFieldValueChange = {}
+        onDialogDismiss = {onAction(DashboardAction.NameEditDialogDismiss)},
+        onConfirmButtonClick = {onAction(DashboardAction.NameEditDialogConfirm)},
+        onTextFieldValueChange = {onAction(DashboardAction.SetUserName(it))}
     )
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -58,7 +59,7 @@ fun DashBoardScreen(
             userName = state.userName,
             questionsAttempted = state.questionsAttempted,
             correctAnswers = state.correctAnswers,
-            onEditNameClick = {}
+            onEditNameClick = { onAction(DashboardAction.NameEditIconClick) }
         )
         QuizTopicSection(
             modifier = Modifier
@@ -66,7 +67,7 @@ fun DashBoardScreen(
             quizTopics = state.quizTopics,
             isTopicsLoading = state.isLoading,
             errorMessage = state.errorMessage,
-            onRefreshIconClick = {},
+            onRefreshIconClick = {onAction(DashboardAction.RefreshIconClick)},
             onTopicCardClick= onTopicCardClick
         )
     }
@@ -204,5 +205,6 @@ fun DashBoardScreenPreview() {
             isNameEditDialogOpen = true,
         )
         , onTopicCardClick = {}
+        , onAction = {}
     )
 }
