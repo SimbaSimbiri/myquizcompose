@@ -72,7 +72,7 @@ fun ResultScreen(
                         .fillMaxWidth()
                         .padding(vertical = 80.dp, horizontal = 10.dp),
                     scorePercentage = state.scorePercentage,
-                    correctAnswers = state.correctAnswers,
+                    correctAnswers = state.correctAnswerCount,
                     totalQuestions = state.totalQuestions
                 )
             }
@@ -230,7 +230,7 @@ private fun ResultScreenPreview() {
     ResultScreen(
         state = ResultState(
             scorePercentage = 80,
-            correctAnswers = 7,
+            correctAnswerCount = 7,
             totalQuestions = 10,
             quizQuestions = dummyQns,
             userAnswers = dummyAnswers

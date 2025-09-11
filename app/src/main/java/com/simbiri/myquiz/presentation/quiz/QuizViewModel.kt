@@ -85,7 +85,7 @@ class QuizViewModel(
             }
             QuizAction.ConfirmSubmitQuizButtonClick -> {
                 _state.update { it.copy(isSubmitQuizDialogOpen = false) }
-                _event.trySend(QuizEvent.NavigateToResultScreen)
+                saveUserAnswers()
             }
             QuizAction.SubmitQuizDialogDismiss -> {
                 _state.update { it.copy(isSubmitQuizDialogOpen = false) }
@@ -151,6 +151,31 @@ class QuizViewModel(
             }
 
 
+    }
+
+    private fun saveUserAnswers(){
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isLoading = true,
+                    loadingMessage = "Submitting Quiz"
+                )
+            }
+            quizQuestionRepo.saveUserAnswers(state.value.chosenAnswers)
+                .onFailure { error ->
+                    _event.send(QuizEvent.ShowToast(error.getErrorMessage()))
+
+                }
+
+            _state.update {
+                it.copy(
+                    isLoading = false,
+                    loadingMessage = null
+                )
+            }
+            _event.send(QuizEvent.NavigateToResultScreen)
+
+        }
     }
 
 

@@ -30,7 +30,7 @@ fun List<QuizQuestionDto>.toQuizQuestionEntities() = map { it.toQuizQuestionEnti
 
 
 // Entity to Domain mappers
-private fun QuizQuestionEntity.entityToQuizQuestion() = QuizQuestion(
+fun QuizQuestionEntity.entityToQuizQuestion() = QuizQuestion(
     id = id,
     question = question,
     correctAnswer = correctAnswer,

@@ -1,5 +1,6 @@
 package com.simbiri.myquiz.data.remote
 
+import com.simbiri.myquiz.data.remote.dto.IssueReportDto
 import com.simbiri.myquiz.data.remote.dto.QuizQuestionDto
 import com.simbiri.myquiz.data.remote.dto.QuizTopicDto
 import com.simbiri.myquiz.domain.util.DataError
@@ -10,4 +11,5 @@ interface RemoteDataSource {
 
     suspend fun getQuizTopics(): ResultType<List<QuizTopicDto>, DataError>
     suspend fun getQuizQuestions(topicCode: Int): ResultType<List<QuizQuestionDto>, DataError>
+    suspend fun insertIssueReport(issueReportDto: IssueReportDto): ResultType<Unit, DataError>
 }

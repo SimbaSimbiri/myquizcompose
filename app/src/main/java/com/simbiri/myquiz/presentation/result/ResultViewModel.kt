@@ -22,22 +22,63 @@ class ResultViewModel(
 
 
     private val _event = Channel<ResultEvent>()
-    val event =  _event.receiveAsFlow()
+    val event = _event.receiveAsFlow()
 
     init {
-        getAllQuestions()
+        fetchQuizMetrics()
     }
 
-    private fun getAllQuestions(){
+    private fun fetchQuizMetrics() {
         viewModelScope.launch {
-            questionRepository.getQuizQuestions()
-                .onSuccess { questions ->
-                    _state.update { it.copy(quizQuestions = questions) }
+            getQuizQuestions()
+            getUserAnswers()
+            updateResult()
+        }
+    }
 
-                }
-                .onFailure { error ->
-                    _event.send(ResultEvent.ShowToast(error.getErrorMessage()))
-                }
+    private suspend fun getQuizQuestions() {
+        questionRepository.getQuizQuestions()
+            .onSuccess { questions ->
+                _state.update { it.copy(quizQuestions = questions) }
+
+            }
+            .onFailure { error ->
+                _event.send(ResultEvent.ShowToast(error.getErrorMessage()))
+            }
+
+    }
+
+    private suspend fun getUserAnswers() {
+        questionRepository.getUserAnswers()
+            .onSuccess { answers ->
+                _state.update { it.copy(userAnswers = answers) }
+            }
+            .onFailure { error ->
+                _event.send(ResultEvent.ShowToast(error.getErrorMessage()))
+            }
+    }
+
+
+    private fun updateResult() {
+        val quizQuestions = state.value.quizQuestions
+        val userAnswers = state.value.userAnswers
+
+        val totalQuestions = quizQuestions.size
+        val correctAnswerCount = userAnswers.count { userAnswer ->
+            val question = quizQuestions.find { it.id == userAnswer.questionId }
+            question?.correctAnswer == userAnswer.selectedOption
+        }
+        val percentage = if (totalQuestions > 0) {
+            (correctAnswerCount * 100) / quizQuestions.size
+        } else {
+            0
+        }
+        _state.update {
+            it.copy(
+                totalQuestions = totalQuestions,
+                correctAnswerCount = correctAnswerCount,
+                scorePercentage = percentage,
+            )
         }
     }
 

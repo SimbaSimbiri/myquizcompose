@@ -37,8 +37,8 @@ suspend inline fun <reified T> safeCall(
             try {
                 // here we get the body of the json object with List<QuizTopicDto/QuizQuestionDto>
                 // which were our serialized classes that our json will automatically be mapped to
-                val topics = response.body<T>()
-                ResultType.Success(topics)
+                val data = response.body<T>()
+                ResultType.Success(data)
             } catch (e: JsonConvertException){
                 ResultType.Failure(DataError.SerializationError)
             } catch (e: NoTransformationFoundException){

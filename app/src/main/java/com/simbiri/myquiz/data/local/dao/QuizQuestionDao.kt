@@ -18,6 +18,6 @@ interface QuizQuestionDao {
     suspend fun clearQuizQuestions()
 
     @Query("SELECT * FROM quiz_question WHERE id = :questionId")
-    suspend fun getQuizQuestionById(questionId: String): QuizQuestionEntity
+    suspend fun getQuizQuestionById(questionId: String): QuizQuestionEntity?
 
 }

@@ -9,16 +9,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
-import com.simbiri.myquiz.domain.model.QuizQuestion
 import com.simbiri.myquiz.presentation.dashboard.DashBoardScreen
 import com.simbiri.myquiz.presentation.dashboard.DashBoardViewModel
 import com.simbiri.myquiz.presentation.issue_report.IssueReportScreen
-import com.simbiri.myquiz.presentation.issue_report.IssueReportState
+import com.simbiri.myquiz.presentation.issue_report.IssueReportViewModel
 import com.simbiri.myquiz.presentation.quiz.QuizScreen
 import com.simbiri.myquiz.presentation.quiz.QuizViewModel
 import com.simbiri.myquiz.presentation.result.ResultScreen
-import com.simbiri.myquiz.presentation.result.ResultState
 import com.simbiri.myquiz.presentation.result.ResultViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -33,17 +30,6 @@ fun NavGraph(
         navController = navController,
         startDestination = Route.DashboardScreen,
     ){
-        val dummyQns = List(5) { idx ->
-            QuizQuestion(
-                id = "$idx",
-                question = "What is the capital of India?",
-                correctAnswer = "New Delhi",
-                allOptions = listOf("New Delhi", "Mumbai", "Kolkata", "Chennai"),
-                explanation = "The capital of India is New Delhi.",
-                topicCode = 1
-            )
-        }
-
 
         composable<Route.DashboardScreen>{
             val viewModel = koinViewModel<DashBoardViewModel>()
@@ -95,12 +81,14 @@ fun NavGraph(
             )
         }
         composable<Route.IssueReportScreen>{ navBackStackEntry->
-            val questionId = navBackStackEntry.toRoute<Route.IssueReportScreen>().questionId
-            val question = dummyQns.find { it.id == questionId }
+            val viewModel = koinViewModel<IssueReportViewModel>()
+            val state by viewModel.state.collectAsStateWithLifecycle()
 
             IssueReportScreen(
-                state = IssueReportState(quizQuestion = question),
-                onBackButtonClick = {
+                state = state,
+                event= viewModel.event,
+                onAction = viewModel::onAction,
+                navigateUp = {
                     navController.navigateUp()
                 }
             )

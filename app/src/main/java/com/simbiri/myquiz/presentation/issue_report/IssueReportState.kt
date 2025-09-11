@@ -5,7 +5,7 @@ import com.simbiri.myquiz.domain.model.QuizQuestion
 data class IssueReportState(
     val quizQuestion: QuizQuestion? = null,
     val isQuestionCardExpanded: Boolean = false,
-    val selectedIssueType: IssueType= IssueType.OTHER,
+    val selectedIssueType: IssueType= IssueType.INCORRECT_ANSWER,
     val otherIssueText: String = "",
     val additionalComment: String = "",
     val emailForFollowUp: String = ""
