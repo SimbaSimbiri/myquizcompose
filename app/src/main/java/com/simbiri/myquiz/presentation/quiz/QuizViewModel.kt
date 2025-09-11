@@ -68,8 +68,6 @@ class QuizViewModel(
                 if (idx != -1) currAnswers[idx] = newAnswer
                 else currAnswers.add(newAnswer)
 
-                currAnswers.add(newAnswer)
-
                 _state.update { it.copy(chosenAnswers = currAnswers) }
             }
 
