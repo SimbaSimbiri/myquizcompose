@@ -85,7 +85,7 @@ class DashBoardViewModel(
                    quizTopics ->
                    _state.update { dashBoardState ->
                        dashBoardState.copy(
-                           quizTopics = quizTopics,
+                           quizTopics = quizTopics.sortedBy { it.name },
                            errorMessage = null,
                            isLoading = false
                        )

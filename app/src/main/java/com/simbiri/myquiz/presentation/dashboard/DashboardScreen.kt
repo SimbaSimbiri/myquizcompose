@@ -155,7 +155,7 @@ private fun QuizTopicSection(
             verticalArrangement = Arrangement.spacedBy(30.dp),
         ) {
             if (isTopicsLoading){
-                items(7){
+                items(10){
                     ShimmerEffect(
                         modifier = Modifier
                             .fillMaxWidth()

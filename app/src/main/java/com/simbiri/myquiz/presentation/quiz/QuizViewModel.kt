@@ -109,8 +109,8 @@ class QuizViewModel(
     private suspend fun getQuizTopicByCode(topicCode: Int) {
         topicRepository.getQuizTopicsByCode(topicCode)
             .onSuccess { topic ->
-                val topicName = topic.name.split(" ").first()
-                _state.update { it.copy(topBarTitle = "$topicName Quiz") }
+                //val topicName = topic.name.split(" ").first()
+                _state.update { it.copy(topBarTitle = "${topic.name} Quiz") }
 
             }
             .onFailure { error ->
